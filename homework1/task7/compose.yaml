@@ -1,0 +1,21 @@
+services:
+  node1:
+    image: serhii714/ubuntu:24.04-ssh
+    container_name: node1
+    expose:
+      - 22
+    ports:
+      - 2222:22
+    networks:
+      - ssh-network
+
+  node2:
+    image: serhii714/ubuntu:24.04-ssh
+    container_name: node2
+    expose:
+      - 22
+    networks:
+      - ssh-network
+
+networks:
+  ssh-network:

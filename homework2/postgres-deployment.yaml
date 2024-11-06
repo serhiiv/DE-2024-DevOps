@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: pgagmin-postgres-configmap
+                  key: postgres_db
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: pgagmin-postgres-configmap
+                  key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgagmin-postgres-secret
+                  key: postgres_pw
+      restartPolicy: Always
+      volumes:
+        - name: postgres-database
+          persistentVolumeClaim:
+            claimName: postgres-database
